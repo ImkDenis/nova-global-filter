@@ -17,9 +17,12 @@ trait GlobalFilterable
             //dd(json_decode($request->filters, true));
             $request->range = optional($request)->range ?? 3600;
 
-            $requestFilters = array_keys(json_decode($request->filters, true));
+            $filterData = array_filter($request->filters, function ($key) {
+                return $key !== 'type';
+            }, ARRAY_FILTER_USE_KEY);
 
-            foreach (json_decode($request->filters, true) as $filter => $value) {
+            $requestFilters = array_keys($filterData);
+            foreach ($filterData as $filter => $value) {
                 if (empty($value)) {
                     continue;
                 }
